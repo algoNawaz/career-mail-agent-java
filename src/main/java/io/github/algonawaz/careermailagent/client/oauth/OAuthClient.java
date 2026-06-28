@@ -4,6 +4,7 @@ import io.github.algonawaz.careermailagent.dto.OAuthTokenResponse;
 import io.github.algonawaz.careermailagent.properties.GmailProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -12,16 +13,21 @@ import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+/**
+ * Handles OAuth2 authentication with Google and retrieves
+ * access tokens using the configured refresh token.
+ */
 @Component
 public class OAuthClient {
 
     private static final Logger logger =
             LoggerFactory.getLogger(OAuthClient.class);
 
+
     private final RestClient restClient;
     private final GmailProperties gmailProperties;
 
-    public OAuthClient(RestClient restClient,
+    public OAuthClient(@Qualifier("gmailRestClient") RestClient restClient,
                        GmailProperties gmailProperties) {
 
         this.restClient = restClient;
@@ -65,11 +71,12 @@ public class OAuthClient {
 
         } catch (Exception ex) {
 
-            logger.error("OAuth request failed.");
+            logger.error("Failed to get OAuth access token.", ex);
 
-            ex.printStackTrace();
-
-            return null;
+            throw new IllegalStateException(
+                    "Unable to obtain Gmail access token",
+                    ex
+            );
         }
     }
 

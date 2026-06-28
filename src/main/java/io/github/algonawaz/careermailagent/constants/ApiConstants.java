@@ -20,11 +20,21 @@ public final class ApiConstants {
 
     // Gmail API
     public static final String GMAIL_BASE_URL =
-            "https://gmail.googleapis.com/gmail/v1/users/me/messages";
+            "/users/me/messages";
 
-    public static final String USER_ID = "me";
+    public static final String GMAIL_LABELS =
+            "/users/me/labels";
 
-    public static final String UNREAD_QUERY = "is:unread";
+    public static final String MODIFY_MESSAGE =
+            "/users/me/messages/%s/modify";
+
+
+    public static final String UNREAD_QUERY =
+            "is:unread -label:CareerMailAgent-Processed";
 
     public static final Integer DEFAULT_MAX_RESULTS = 20;
+
+
+
+
 }

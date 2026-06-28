@@ -1,13 +1,10 @@
 package io.github.algonawaz.careermailagent.startup;
 
-import io.github.algonawaz.careermailagent.client.mail.GmailMailClient;
+import io.github.algonawaz.careermailagent.service.MailScannerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
-import io.github.algonawaz.careermailagent.model.EmailMessage;
-import java.util.List;
 
 @Component
 public class OAuthStartupRunner implements CommandLineRunner {
@@ -15,28 +12,40 @@ public class OAuthStartupRunner implements CommandLineRunner {
     private static final Logger logger =
             LoggerFactory.getLogger(OAuthStartupRunner.class);
 
-    private final GmailMailClient gmailMailClient;
+    private final MailScannerService mailScannerService;
 
-    public OAuthStartupRunner(GmailMailClient gmailMailClient) {
-        this.gmailMailClient = gmailMailClient;
+    public OAuthStartupRunner(
+            MailScannerService mailScannerService) {
+
+        this.mailScannerService = mailScannerService;
     }
 
     @Override
     public void run(String... args) {
 
-        logger.info("Testing Gmail integration...");
+        logger.info("========================================");
+        logger.info("Career Mail Agent Started");
+        logger.info("========================================");
 
-        List<EmailMessage> emails = gmailMailClient.getUnreadEmails();
+        try {
 
-        logger.info("Total Emails Received: {}", emails.size());
+            mailScannerService.scanCareerEmails();
 
-        for (EmailMessage email : emails) {
+            logger.info("Career Mail Agent completed successfully.");
 
-            logger.info("----------------------------------------");
-            logger.info("From: {}", email.getFrom());
-            logger.info("Subject: {}", email.getSubject());
-            logger.info("Snippet: {}", email.getSnippet());
-            logger.info("Received: {}", email.getReceivedAt());
+        } catch (Exception ex) {
+
+            logger.error(
+                    "Career Mail Agent failed.",
+                    ex
+            );
+
         }
+
+        logger.info("========================================");
+        logger.info("Career Mail Agent Finished");
+        logger.info("========================================");
+
+        System.exit(0);
     }
 }

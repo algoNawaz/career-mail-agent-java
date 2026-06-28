@@ -30,4 +30,7 @@ public final class CareerConstants {
             "deloitte"
     );
 
+    public static final String PROCESSED_LABEL =
+            "CareerMailAgent-Processed";
+
 }
